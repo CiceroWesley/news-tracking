@@ -12,12 +12,20 @@ const PORT = 3000;
 const app : Express = express();
 const httpServer = createServer(app);
 
+app.use(express.json());
 app.use(cors());
+
 
 type requestNews = {
   q: string,
   hl: string,
   gl: string
+};
+
+type news = {
+  title: string,
+  link: string,
+  time: string
 }
 
 // create socket server
@@ -32,45 +40,50 @@ io.on('connection', async (socket : Socket) => {
   // console.log(socket);
 
   socket.on('news', async (data : requestNews) => {
-    console.log(data);
-    const news = await axiosInstance.get(`https://news.google.com/search?q=israel&hl=pt-BR&gl=BR&ceid=BR%3Apt-419`);
+    const {q, hl, gl} = data
+    console.log(q,hl,gl)
+    const news = await axiosInstance.get(`https://news.google.com/search?q=${q}&hl=${hl}&gl=${gl}&ceid=BR%3Apt-419`);
     
     const $ = cheerio.load(news.data);
     
-    const $articles = $('.DY5T1d.RZIKme')
+    const $articles = $('.DY5T1d.RZIKme');
+    let articles : news[] = [];
     
-    // fs.writeFile('/home/wesley/site.html', String($articles.children('h3')), (err) => {
-    //   if(err){
-    //     console.log(err)
-    //   }
-    // })
-    // console.log(($articles[0].children[0] as any).data)
-    
-    // $articles.each((index, el) => {
-    //   // let link = $(el).children('a')
-    //   // let title = $(el).children('h3').text()
-    //   console.log(el.parent)
-    //   // console.log(title)
-    // })
+    $articles.each((index, article) => {
+      const element : news = {
+        title : ((article.children[0] as unknown) as Text).data,
+        link : article.attribs.href,
+        time : ((((article.parent?.next as unknown) as Element).children[0].children[1].children[0] as unknown) as Text).data
+      }
+      articles.push(element);
+    })    
+    socket.emit('receive_news', articles)
+    // console.log(articles)
   })
 
 })
 
-app.get('/test', async (req, res) => {
-    const news = await axiosInstance.get(`https://news.google.com/search?q=israel&hl=pt-BR&gl=BR&ceid=BR%3Apt-419`);
+app.post('/test', async (req, res) => {
+    const {q, hl, gl} = req.body;
+    
+    const news = await axiosInstance.get(`https://news.google.com/search?q=${q}&hl=${hl}&gl=${gl}&ceid=BR%3Apt-419`);
     
     const $ = cheerio.load(news.data);
     
-    const $articles = $('.DY5T1d.RZIKme')
-    // const articlesSlice = $articles
-    // console.log($articles[0].attribs.href)
-    // console.log((($articles[0].children[0] as unknown) as Text).data)
+    const $articles = $('.DY5T1d.RZIKme');
+    let articles : news[] = [];
+    console.log((((($articles[0].parent?.next as unknown) as Element).children[0].children[1].children[0] as unknown) as Text).data)
+    
     $articles.each((index, article) => {
-      console.log(index)
-      console.log(article.attribs.href)
-      console.log(((article.children[0] as unknown) as Text).data)
+      const element : news = {
+        title : ((article.children[0] as unknown) as Text).data,
+        link : article.attribs.href,
+        time : ((((article.parent?.next as unknown) as Element).children[0].children[1].children[0] as unknown) as Text).data
+      }
+      articles.push(element);
     })
-    res.status(200)
+    
+    res.status(200).json(articles)
 })
 
 httpServer.listen(PORT, () => {
