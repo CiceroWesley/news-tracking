@@ -10,7 +10,8 @@ type requestNews = {
 
 type news = {
   title: string,
-  link: string
+  link: string,
+  time: string
 }
 // q=israel&hl=pt-BR&gl=BR&ceid=BR%3Apt-419
 
@@ -30,7 +31,6 @@ function App() {
 
   useEffect(() => {
     socket.on('receive_news', (data : news[]) =>{
-      // console.log(data)
       setMessage(data)
 
     })
@@ -44,7 +44,8 @@ function App() {
         {message && message.map((ele) => (
           <div>
             <h4>{ele.title}</h4>
-            <h5>{ele.link}</h5>
+            <a href={`https://news.google.com/${ele.link}`} target='_blank'>Link</a>
+            <h6>{ele.time}</h6>
           </div>
         ))}
       </div>
