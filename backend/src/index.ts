@@ -2,9 +2,7 @@ import express, {Express, Request, Response} from 'express';
 import {createServer} from 'http';
 import {Server, Socket} from 'socket.io';
 import cors from 'cors';
-import * as cheerio from 'cheerio';
-import axiosInstance from './utils/axios';
-import { requestNews, news } from './types/types';
+import { requestNews } from './types/types';
 import News from './utils/news';
 
 const PORT = 3000;
@@ -24,20 +22,25 @@ const io = new Server(httpServer, {
 
 io.on('connection', async (socket : Socket) => {
 
-  socket.on('news', async (data : requestNews) => {
-    const {q, hl, gl} = data;
+  socket.on('news', async ({q, hl, gl, time = 15} : requestNews) => {
 
-
-    setInterval(async () => {
-      // get news from web
-    const newsData = await News.requestNews({q, hl, gl});
-    
-    // select data of articles
-    const $articles = News.selectArticles(newsData);
-    const articles = News.mountStructureNews($articles);
-    
-    socket.emit('receive_news', articles);
-    }, 1000000);
+    const emitData = async () => {
+      try {
+        // get news from web
+        const newsData = await News.requestNews({q, hl, gl});
+        
+        // select data of articles
+        const $articles = News.selectArticles(newsData);
+        const articles = News.mountStructureNews($articles);
+        
+        socket.emit('receive_news', articles);  
+      } catch (error) {
+        // todo emit error event
+        console.log(error)
+      }
+    }
+    emitData();
+    setInterval(emitData, 60000 * time);
 
   })
 
