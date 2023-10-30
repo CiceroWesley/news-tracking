@@ -48,17 +48,22 @@ io.on('connection', async (socket : Socket) => {
 
 // post route with some result of socket
 // should be get route with params in url
-app.post('/test', async (req : Request, res : Response) => {
-    const {q, hl, gl} = req.body;
+app.get('/news/:q&hl=:hl&gl=:gl', async (req : Request, res : Response) => {
+    const {q, hl, gl} = req.params;
     
-    // get news from web
-    const newsData = await News.requestNews({q, hl, gl});
-    
-    // select data of articles
-    const $articles = News.selectArticles(newsData);
-    const articles = News.mountStructureNews($articles);
+    try {
+      // get news from web
+      const newsData = await News.requestNews({q, hl, gl});
+      
+      // select data of articles
+      const $articles = News.selectArticles(newsData);
+      const articles = News.mountStructureNews($articles);
 
-    res.status(200).json(articles)
+      res.status(200).json(articles)  
+    } catch (error) {
+      res.status(422).json({error})
+    }
+    
 })
 
 httpServer.listen(PORT, () => {
