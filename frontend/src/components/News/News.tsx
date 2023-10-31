@@ -6,7 +6,7 @@ type Props = {
 
 const News = ({title, link, time}: Props) => {
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col border-2 rounded-md shadow-xl text-justify p-2'>
       <a href={`https://news.google.com/${link}`} target='_blank'>
         <h4 className='text-xl'>{title}</h4>
       </a>

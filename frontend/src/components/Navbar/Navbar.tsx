@@ -2,10 +2,8 @@
 
 const Navbar = () => {
   return (
-    <div className="flex justify-center">
-        <div>
-          <span>Real Time News</span>
-        </div>
+    <div className="flex justify-center text-xl font-bold">
+        <h1>News Tracking</h1>
     </div>
   )
 }
