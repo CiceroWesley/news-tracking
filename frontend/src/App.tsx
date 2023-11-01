@@ -1,25 +1,11 @@
 import { useState } from 'react';
 import './App.css'
-// import { Socket, io } from 'socket.io-client'
 import News from './components/News/News';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import axiosInstance from './utils/axios';
-
-// const socket : Socket = io('http://localhost:3000');
-
-type requestNews = {
-  q: string,
-  hl: string,
-  gl: string,
-  time: number
-}
-
-type news = {
-  title: string,
-  link: string,
-  time: string
-}
+import soundMessage from './assets/notificationSound.mp3'
+import { requestNews, news } from './types/typesNews';
 
 function App() {
   const [data, setData] = useState<requestNews>({
@@ -31,13 +17,30 @@ function App() {
   const [newsData, setNewsData] = useState<news[]>()
   const [disableForm, setDisableForm] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  // const [timer, setTimer] = useState<number>(15);
+  const [firstNotification, setFirstNotification] = useState<boolean>(true);
 
+  const showNotification = () => {
+    const notification = new Notification('News Tracking', {body:'Uma nova busca por notícias foi realizada.', dir:'ltr'});
+    const notificationSound = new Audio(soundMessage);
+    notificationSound.play();
+    notification.addEventListener('click', () => {
+      focus();
+      notification.close();
+    })
+  }
 
-  // setInterval(()=> setTimer(timer - 1), 1000)
+  const requestNotification = async () : Promise<void> => {
+    if(Notification.permission !== 'granted'){
+      const requestPermission : NotificationPermission = await Notification.requestPermission();
+      if(requestPermission === 'granted'){
+        showNotification();
+      }
+    } else {
+      showNotification();
+    }
+  };
 
   const handleSubmit = async (e : React.FormEvent<HTMLFormElement>) => {
-    
     e.preventDefault();
     const requestNews = async () => {
       try {
@@ -50,7 +53,10 @@ function App() {
           console.log(newsDataAxios.data.error)
           setLoading(false);
         }
-  
+        if(!firstNotification){
+          requestNotification();
+        }
+        setFirstNotification(false);
       } catch (error) {
         console.log(error)
       }
@@ -66,7 +72,6 @@ function App() {
     <Navbar/>
       <div className='flex flex-col items-center mt-1 min-h-[92vh]'>
         {disableForm && <h2> Tracking: {data.q}</h2>}
-        {/* {timer} */}
         {!disableForm && 
           <div className='flex flex-col items-center border-2 rounded-md shadow-xl'>
               <div className='m-1'>
