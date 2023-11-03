@@ -29,6 +29,10 @@ app.get('/news/:q&hl=:hl&gl=:gl', async (req : Request, res : Response) => {
     
 })
 
+app.get('/', (req : Request, res : Response) => {
+  res.send('Bem-vindo');
+})
+
 app.listen(PORT, () => {
   console.log('Server running');
 })
