@@ -4,9 +4,7 @@ import express, {Express, Request, Response} from 'express';
 import cors from 'cors';
 import News from './utils/news';
 
-
-
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 const app : Express = express();
 
 app.use(express.json());
