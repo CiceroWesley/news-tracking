@@ -1,8 +1,12 @@
+import 'dotenv/config'
+
 import express, {Express, Request, Response} from 'express';
 import cors from 'cors';
 import News from './utils/news';
 
-const PORT = 3000;
+
+
+const PORT = process.env.PORT;
 const app : Express = express();
 
 app.use(express.json());
