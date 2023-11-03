@@ -30,8 +30,8 @@ function App() {
   return (
     <>
       <Navbar/>
-      <div className='flex flex-col items-center mt-1 min-h-[92vh]'>
-        {disableForm && <h2> Tracking: {data.q}</h2>}
+      <div className='flex flex-col items-center mt-1 min-h-[75vh] mb-4'>
+        {disableForm && <h2 className='mb-2 font-bold'> Tracking: {data.q}</h2>}
         {!disableForm && 
           <div className='flex flex-col items-center border-2 rounded-md shadow-xl'>
               <div className='m-1'>
@@ -41,7 +41,7 @@ function App() {
              <Form data={data} setData={setData} handleSubmit={handleSubmit}/>
           </div>          
         }
-        {loadingNews && <h2>Carregando...</h2>}
+        {loadingNews && <h2 className='animate-pulse'>Carregando...</h2>}
         {disableForm && !loadingNews && 
           <div className='flex flex-col w-1/2 space-y-8'>
           {newsDataHook && newsDataHook.map((newsElement) => (

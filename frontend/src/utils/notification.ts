@@ -7,7 +7,7 @@ const allowNotification = async () : Promise<void> => {
 };
 
 const showNotification = (title : string, body : string) => {
-  const notification = new Notification(title, {body, dir:'ltr'});
+  const notification = new Notification(title, {body, dir:'ltr' , icon:'/newsTrackingLogo.png'});
   const notificationSound = new Audio(soundMessage);
   notificationSound.play();
   notification.addEventListener('click', () => {
