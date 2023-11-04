@@ -2,7 +2,8 @@ import soundMessage from '../assets/notificationSound.mp3'
 
 const allowNotification = async () : Promise<void> => {
   if(Notification.permission !== 'granted'){
-    const requestPermission : NotificationPermission = await Notification.requestPermission();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    await Notification.requestPermission();
   }
 };
 
