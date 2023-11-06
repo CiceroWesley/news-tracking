@@ -37,7 +37,7 @@ function App() {
               <div className='m-1'>
                 <span>Seja bem-vindo ao News Tracking. Esse site rastreia notícias sobre um assunto que for informado e atualizará você a cada {data.time} minutos.</span>
               </div>
-              <h2>Insira o assunto da notícia no campo abaixo e selecione o intervalo que você quer deseja receber as notícias.</h2>
+              <h2>Insira o assunto da notícia no campo abaixo e selecione o intervalo que você deseja receber os artigos.</h2>
              <Form data={data} setData={setData} handleSubmit={handleSubmit}/>
           </div>          
         }
