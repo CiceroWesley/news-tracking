@@ -5,7 +5,6 @@ const router : Express = express();
 // post route with some result of socket
 router.get('/news/:q&hl=:hl&gl=:gl', async (req : Request, res : Response) => {
     const {q, hl, gl} = req.params;
-    
     try {
       // get news from web
       const newsData = await News.requestNews({q, hl, gl});
