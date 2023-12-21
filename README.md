@@ -23,7 +23,7 @@ Para instalar o News Tracking, siga esta etapa:
 
 Linux:
 ```
-1. sudo docker compose build
+1. Execute sudo docker compose build
 ```
 
 ## ☕ Usando o News Tracking
